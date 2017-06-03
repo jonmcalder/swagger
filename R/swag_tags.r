@@ -4,13 +4,13 @@ swag_tags <- function(g) {
     for (op in names(g$paths[[ops]])) {
 
       node <- g$paths[[ops]][[op]]
-      fil <- paste(myg$RSWAG$pkg_dir, "R", sprintf("%s.r", node$operationId), sep="/")
+      fil <- paste(g$RSWAG$pkg_dir, "R", sprintf("%s.r", node$operationId), sep="/")
       message(sprintf("  - creating %s...", fil))
 
       cat("# Generaged with swagger: edits may be overwritten if you re-generate the package\n\n", file=fil)
       cat(sprintf("#' @title %s\n", node$summary), file=fil, append=TRUE)
 
-      if (node$description != "") {
+      if (!is.null(node$description)) {
         cat(sprintf("#' @description \n", node$description), file=fil, append=TRUE)
       }
 
@@ -26,7 +26,7 @@ swag_tags <- function(g) {
                   node$operationId,
                   paste(node$parameters$name, collapse=", ")), file=fil, append=TRUE)
 
-      base_url <- sprintf("%s//%s%s", g$schemes[1], g$host, g$basePath)
+      base_url <- sprintf("%s://%s%s", g$schemes[1], g$host, g$basePath)
 
       cat(sprintf("  res <- %s('%s')\n",
                   toupper(op),
